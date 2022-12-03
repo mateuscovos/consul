@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  consulserver01:
+    build: ./servers
+    container_name: consulserver01
+    hostname: consulserver01
+    entrypoint: sh ./start.sh
+    volumes:
+      - ./servers/server01:/etc/consul.d
+    ports:
+      - "8500:8500"
+    networks:
+      consulnet:
+        ipv4_address: 172.24.0.2
+
+  consulserver02:
+    build: ./servers
+    container_name: consulserver02
+    hostname: consulserver02
+    entrypoint: sh ./start.sh
+    volumes:
+      - ./servers/server02:/etc/consul.d
+    networks:
+      consulnet:
+        ipv4_address: 172.24.0.3
+
+  consulserver03:
+    build: ./servers
+    container_name: consulserver03
+    hostname: consulserver03
+    entrypoint: sh ./start.sh
+    volumes:
+      - ./servers/server03:/etc/consul.d
+    networks:
+      consulnet:
+        ipv4_address: 172.24.0.4
+
+  consulclient01:
+    build: ./clients
+    container_name: consulclient01
+    hostname: consulclient01
+    entrypoint: sh ./start-without-nginx.sh
+    volumes:
+      - ./clients/consul01:/etc/consul.d
+    networks:
+      consulnet:
+        ipv4_address: 172.24.0.5
+
+  consulclient02:
+    build: ./clients
+    container_name: consulclient02
+    hostname: consulclient02
+    entrypoint: sh ./start.sh
+    volumes:
+      - ./clients/consul02:/etc/consul.d
+    networks:
+      consulnet:
+        ipv4_address: 172.24.0.6
+
+networks:
+  consulnet:
+    ipam:
+      config:
+        - subnet: 172.24.0.0/24
